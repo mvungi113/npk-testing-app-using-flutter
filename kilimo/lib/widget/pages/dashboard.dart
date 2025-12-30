@@ -3,7 +3,7 @@ import 'package:kilimo/data/testresult.dart';
 import 'package:kilimo/data/view_allresult.dart';
 
 class MyDashboard extends StatelessWidget {
-  const MyDashboard({Key? key}) : super(key: key);
+  const MyDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class MyDashboard extends StatelessWidget {
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => allresult()));
+                          MaterialPageRoute(builder: (context) => AllResult()));
                     },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +59,7 @@ class MyDashboard extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => resultview()));
+                      MaterialPageRoute(builder: (context) => ResultView()));
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

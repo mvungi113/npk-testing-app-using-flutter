@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kilimo/authentication/google.dart';
 import 'package:kilimo/authentication/loginpage.dart';
-import 'package:kilimo/authentication/register.dart';
-import 'package:kilimo/widget/pages/home.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -12,7 +9,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class IntroScreen extends StatefulWidget {
-  const IntroScreen({Key? key}) : super(key: key);
+  const IntroScreen({super.key});
 
   @override
   State<IntroScreen> createState() => _IntroScreenState();
@@ -61,11 +58,11 @@ class _IntroScreenState extends State<IntroScreen> {
               ),
               Padding(
                 padding: EdgeInsets.zero,
-               child: Image(
+                child: Image(
                   image: NetworkImage(
                       'https://images.unsplash.com/photo-1587884934488-2c4044f0596c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTR8fHNvaWx8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60'),
                   fit: BoxFit.cover,
-                ), 
+                ),
               ),
               SizedBox(
                 height: 20,
@@ -84,7 +81,7 @@ class _IntroScreenState extends State<IntroScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => loginpage()));
+                                builder: (context) => const LoginPage()));
                       },
                       icon: Icon(
                         Icons.email,
@@ -102,7 +99,6 @@ class _IntroScreenState extends State<IntroScreen> {
               SizedBox(
                 height: 10,
               ),
-              
             ],
           ),
         ));

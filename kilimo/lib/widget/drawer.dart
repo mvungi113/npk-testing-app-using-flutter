@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kilimo/authentication/authentication.dart';
-import 'package:kilimo/authentication/loginpage.dart';
 import 'package:kilimo/authentication/register.dart';
 import 'package:kilimo/data/testresult.dart';
 import 'package:kilimo/data/view_allresult.dart';
@@ -8,7 +7,7 @@ import 'package:kilimo/main.dart';
 import 'package:kilimo/widget/pages/home.dart';
 
 class SideNav extends StatelessWidget {
-  const SideNav({Key? key}) : super(key: key);
+  const SideNav({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +36,19 @@ class SideNav extends StatelessWidget {
                         ),
                         fit: BoxFit.cover,
                       ),
+                    )),
+                    Text(
+                      'ROGASIAN MVUNGI',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'test@gmail.com',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     )
-                  ),
-                    Text('ROGASIAN MVUNGI',style: TextStyle(color: Colors.white,),),
-                    Text('test@gmail.com',style: TextStyle(color: Colors.white,),)
                   ],
                 ),
               )),
@@ -48,8 +56,10 @@ class SideNav extends StatelessWidget {
             ListTile(
               title: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => UserHomePage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const UserHomePage()));
                 },
                 child: Text('Nyumbani'),
               ),
@@ -58,7 +68,7 @@ class SideNav extends StatelessWidget {
               title: ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => resultview()));
+                      MaterialPageRoute(builder: (context) => ResultView()));
                 },
                 child: Text('Vipimo Vya Muda Huu'),
               ),
@@ -67,7 +77,7 @@ class SideNav extends StatelessWidget {
               title: ElevatedButton(
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => allresult()));
+                      MaterialPageRoute(builder: (context) => AllResult()));
                 },
                 child: Text('Vipimo Vya Zamani'),
               ),
@@ -75,11 +85,13 @@ class SideNav extends StatelessWidget {
             SizedBox(
               height: 100,
             ),
-             ListTile(
+            ListTile(
               title: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => registerpage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()));
                 },
                 child: Text('Sajili'),
               ),
@@ -91,11 +103,10 @@ class SideNav extends StatelessWidget {
                 ListTile(
                   title: ElevatedButton(
                     onPressed: () {
-                        Authentication().signOut().then((_) =>
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const MyApp())));
+                      final navigator = Navigator.of(context);
+                      Authentication().signOut().then((_) =>
+                          navigator.pushReplacement(MaterialPageRoute(
+                              builder: (context) => const MyApp())));
                     },
                     child: Text(
                       'Ondoka',

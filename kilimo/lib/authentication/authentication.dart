@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 class Authentication {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  get user => _auth.currentUser;
+  User? get user => _auth.currentUser;
 
-// sign up method
-  Future signup({
+  // sign up method
+  Future<String?> signup({
     required String email,
     required String password,
   }) async {
@@ -14,14 +15,14 @@ class Authentication {
         email: email,
         password: password,
       );
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
-  
 
-// sign in method
-  Future signin({
+  // sign in method
+  Future<String?> signin({
     required String email,
     required String password,
   }) async {
@@ -30,19 +31,17 @@ class Authentication {
         email: email,
         password: password,
       );
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-// logiout method
-  Future signOut() async {
+  // logout method
+  Future<void> signOut() async {
     await _auth.signOut();
-    print('Your Have Logout');
+    // use debugPrint instead of print for production friendliness
+    debugPrint('You have logged out');
   }
-
-// google sign in method
-
-
 }
 // keytool -list -v -keystore %USERPROFILE%\.android\debug.keystore -alias androiddebugkey -storepass android -keypass android

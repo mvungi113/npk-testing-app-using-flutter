@@ -2,21 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:kilimo/authentication/authentication.dart';
 import 'package:kilimo/data/data.dart';
-import 'package:kilimo/main.dart';
 import 'package:kilimo/widget/drawer.dart';
 
-class allresult extends StatefulWidget {
-  const allresult({Key? key}) : super(key: key);
+class AllResult extends StatefulWidget {
+  const AllResult({super.key});
 
   @override
-  State<allresult> createState() => _allresultState();
+  State<AllResult> createState() => _AllResultState();
 }
 
-class _allresultState extends State<allresult> {
+class _AllResultState extends State<AllResult> {
   bool error = false, dataloaded = false;
-  var data;
+  dynamic data;
   String dataurl = "http://192.168.43.23/soil-npk-test/allresult.php";
   // php script url
 
@@ -60,8 +58,7 @@ class _allresultState extends State<allresult> {
         backgroundColor: Color.fromARGB(255, 17, 55, 38),
       ),
       drawer: SideNav(),
-      body: ListView(
-      children: [
+      body: ListView(children: [
         Container(
           padding: EdgeInsets.all(15),
           // check if the data is loaded
@@ -90,96 +87,98 @@ class _allresultState extends State<allresult> {
 
           // if data is loaded then show table
           // border: TableBorder.all(width: 1, color: Colors.black),
-          children: namelist.map((nameone) {
-            return Column(
-              children: [
-                Container(
-                  padding: const  EdgeInsets.all(30),
-                  decoration: BoxDecoration(
+          children: namelist.map(
+        (nameone) {
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
                   // borderRadius:BorderRadius.circular(30),
-                  
-                  
-              color: Color.fromARGB(255, 177, 203, 178),
-                  ),
-                  child: Column(
-                  
-                    children: [
-                      CircleAvatar(
-                      backgroundColor: Color.fromARGB(255, 17, 55, 38),
-                       child:Text(nameone.sn, style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold,)),
 
-                      ),
-                      SizedBox(height: 5,),
+                  color: Color.fromARGB(255, 177, 203, 178),
+                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Color.fromARGB(255, 17, 55, 38),
+                      child: Text(nameone.sn,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('NITROGEN',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        )),
-                        Text(nameone.potassium +'ppm',
-                       style: TextStyle(
-                          fontSize: 16,
-                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        )),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text('${nameone.potassium}ppm',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            )),
                       ],
                     ),
-                    SizedBox(height: 10,),
-
-                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                     children: [
-                      Text('PHOSPHORUS',
-                      style: TextStyle(
-                          fontSize: 16,
-                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        )),
-                       Text(nameone.phosphorus +'ppm',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                           color: Colors.white
-                        )),
-                     ],
-                   ),SizedBox(height: 10,),
-                  
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('POTASSIUM',style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold, color: Colors.white
-                        )),
-                      Text(nameone.potassium +'ppm',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold, color: Colors.white
-                        )),
-                    ],
-                  ),
-          SizedBox(height: 10,),
-
-
-                      
-
-                    ],
-                  ),
-                  
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('PHOSPHORUS',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text('${nameone.phosphorus}ppm',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('POTASSIUM',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        Text('${nameone.potassium}ppm',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
                 ),
-
-                SizedBox(height: 10,),
-              ],
-            );
-           
-      },
-      
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
+          );
+        },
       ).toList());
-       
     }
-    
   }
 }

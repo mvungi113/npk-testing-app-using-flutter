@@ -1,8 +1,11 @@
+# ================================
 # Miscellaneous
+# ================================
 *.class
 *.log
 *.pyc
 *.swp
+*.lock
 .DS_Store
 .atom/
 .build/
@@ -11,35 +14,91 @@
 .svn/
 .swiftpm/
 migrate_working_dir/
+lib/firebase_options.dart
 
-# IntelliJ related
+# ================================
+# IntelliJ / Android Studio
+# ================================
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
+# ================================
+# VS Code
+# ================================
+# Uncomment if you do NOT want to commit VS Code settings
 #.vscode/
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# ================================
+# Flutter / Dart / Pub
+# ================================
 .dart_tool/
-.flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
-/coverage/
+build/
+coverage/
 
-# Symbolication related
-app.*.symbols
+.flutter-plugins
+.flutter-plugins-dependencies
 
-# Obfuscation related
-app.*.map.json
+# API docs
+**/doc/api/
 
-# Android Studio will place build artifacts here
+# iOS Flutter build id
+**/ios/Flutter/.last_build_id
+
+# ================================
+# Environment & Secrets
+# ================================
+.env
+.env.*
+*.keystore
+key.properties
+android/key.properties
+
+# ================================
+# Android
+# ================================
+android/.gradle/
+android/local.properties
+
+# Android build outputs
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ================================
+# iOS / macOS
+# ================================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+
+macos/Pods/
+macos/Flutter/ephemeral/
+
+# ================================
+# Web
+# ================================
+web/.dart_tool/
+
+# ================================
+# Windows
+# ================================
+windows/flutter/ephemeral/
+
+# ================================
+# Linux
+# ================================
+linux/flutter/ephemeral/
+
+# ================================
+# Symbolication / Obfuscation
+# ================================
+app.*.symbols
+app.*.map.json

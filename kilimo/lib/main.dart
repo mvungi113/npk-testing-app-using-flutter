@@ -40,8 +40,9 @@ class AuthWrapper extends StatelessWidget {
     final authProvider = Provider.of<AuthProvider>(context);
 
     if (authProvider.isAuthenticated) {
-      // Check if user profile exists
-      if (authProvider.userModel == null) {
+      // Check if user profile exists and is complete
+      if (authProvider.userModel == null ||
+          !authProvider.userModel!.isProfileComplete) {
         return const ProfileSetupScreen();
       }
       return const HomeScreen();

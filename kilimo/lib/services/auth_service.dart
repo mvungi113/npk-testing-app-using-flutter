@@ -1,113 +1,117 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user_model.dart';
+import '../supabase_config.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final SupabaseClient _supabase = SupabaseConfig.client;
 
   // Stream to listen to auth state changes
-  Stream<User?> get authStateChanges => _auth.authStateChanges();
+  Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 
   // Get current user
-  User? get currentUser => _auth.currentUser;
+  User? get currentUser => _supabase.auth.currentUser;
 
-  // Sign in with Google
-  Future<UserCredential?> signInWithGoogle() async {
+  // Sign in with Google (Note: Supabase handles OAuth differently)
+  Future<bool> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) return null;
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+      await _supabase.auth.signInWithOAuth(
+        OAuthProvider.google,
+        redirectTo: kIsWeb ? null : 'com.example.kilimo://login-callback',
       );
-
-      return await _auth.signInWithCredential(credential);
+      return true;
+    } on AuthException catch (e) {
+      debugPrint('Auth error signing in with Google: ${e.message}');
+      throw Exception(e.message);
     } catch (e) {
       debugPrint('Error signing in with Google: $e');
-      return null;
-    }
-  }
-
-  // Sign in anonymously (guest)
-  Future<UserCredential?> signInAnonymously() async {
-    try {
-      return await _auth.signInAnonymously();
-    } catch (e) {
-      debugPrint('Error signing in anonymously: $e');
-      return null;
+      throw Exception('An error occurred while signing in with Google');
     }
   }
 
   // Sign in with email and password
-  Future<UserCredential?> signInWithEmailAndPassword(
+  Future<AuthResponse?> signInWithEmailAndPassword(
     String email,
     String password,
   ) async {
     try {
-      return await _auth.signInWithEmailAndPassword(
+      final response = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
+      return response;
+    } on AuthException catch (e) {
+      debugPrint('Auth error signing in: ${e.message}');
+      throw Exception(e.message);
     } catch (e) {
       debugPrint('Error signing in with email: $e');
-      return null;
+      throw Exception('An error occurred while signing in');
     }
   }
 
   // Create user with email and password
-  Future<UserCredential?> createUserWithEmailAndPassword(
+  Future<AuthResponse?> createUserWithEmailAndPassword(
     String email,
     String password,
   ) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      final response = await _supabase.auth.signUp(
         email: email,
         password: password,
       );
+      return response;
+    } on AuthException catch (e) {
+      debugPrint('Auth error creating user: ${e.message}');
+      throw Exception(e.message);
     } catch (e) {
       debugPrint('Error creating user with email: $e');
-      return null;
+      throw Exception('An error occurred while creating account');
+    }
+  }
+
+  // Sign in anonymously
+  Future<AuthResponse?> signInAnonymously() async {
+    try {
+      final response = await _supabase.auth.signInAnonymously();
+      return response;
+    } on AuthException catch (e) {
+      debugPrint('Auth error signing in anonymously: ${e.message}');
+      throw Exception(e.message);
+    } catch (e) {
+      debugPrint('Error signing in anonymously: $e');
+      throw Exception('An error occurred while signing in as guest');
     }
   }
 
   // Sign out
   Future<void> signOut() async {
     try {
-      await _googleSignIn.signOut();
-      await _auth.signOut();
+      await _supabase.auth.signOut();
     } catch (e) {
       debugPrint('Error signing out: $e');
     }
   }
 
-  // Save user profile to Firestore
+  // Save user profile to Supabase
   Future<void> saveUserProfile(UserModel user) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(user.toMap(), SetOptions(merge: true));
+      await _supabase.from('users').upsert(user.toMap());
     } catch (e) {
       debugPrint('Error saving user profile: $e');
       rethrow;
     }
   }
 
-  // Get user profile from Firestore
+  // Get user profile from Supabase
   Future<UserModel?> getUserProfile(String uid) async {
     try {
-      final doc = await _firestore.collection('users').doc(uid).get();
-      if (doc.exists) {
-        return UserModel.fromMap(uid, doc.data()!);
-      }
-      return null;
+      final response = await _supabase
+          .from('users')
+          .select()
+          .eq('uid', uid)
+          .single();
+
+      return UserModel.fromMap(uid, response);
     } catch (e) {
       debugPrint('Error getting user profile: $e');
       return null;
@@ -116,11 +120,15 @@ class AuthService {
 
   // Stream user profile changes
   Stream<UserModel?> getUserProfileStream(String uid) {
-    return _firestore.collection('users').doc(uid).snapshots().map((doc) {
-      if (doc.exists) {
-        return UserModel.fromMap(uid, doc.data()!);
-      }
-      return null;
-    });
+    return _supabase
+        .from('users')
+        .stream(primaryKey: ['uid'])
+        .eq('uid', uid)
+        .map((data) {
+          if (data.isNotEmpty) {
+            return UserModel.fromMap(uid, data.first);
+          }
+          return null;
+        });
   }
 }

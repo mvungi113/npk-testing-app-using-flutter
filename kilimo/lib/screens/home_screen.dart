@@ -81,41 +81,6 @@ class HomeScreen extends StatelessWidget {
                         _buildInfoRow('Country', userModel.country!),
                       if (userModel.region != null)
                         _buildInfoRow('Region', userModel.region!),
-                      if (userModel.district != null)
-                        _buildInfoRow('District', userModel.district!),
-                      if (userModel.village != null)
-                        _buildInfoRow('Village', userModel.village!),
-                      if (userModel.farmSize != null)
-                        _buildInfoRow(
-                          'Farm Size',
-                          '${userModel.farmSize} acres',
-                        ),
-                      if (userModel.soilType != null)
-                        _buildInfoRow('Soil Type', userModel.soilType!),
-                      if (userModel.climateZone != null)
-                        _buildInfoRow('Climate Zone', userModel.climateZone!),
-                      if (userModel.farmingExperienceYears != null)
-                        _buildInfoRow(
-                          'Farming Experience',
-                          '${userModel.farmingExperienceYears} years',
-                        ),
-                      if (userModel.primaryCrops != null &&
-                          userModel.primaryCrops!.isNotEmpty)
-                        _buildInfoRow(
-                          'Primary Crops',
-                          userModel.primaryCrops!.join(', '),
-                        ),
-                      if (userModel.farmingMethods != null)
-                        _buildInfoRow(
-                          'Farming Methods',
-                          userModel.farmingMethods!,
-                        ),
-                      if (userModel.equipmentOwned != null &&
-                          userModel.equipmentOwned!.isNotEmpty)
-                        _buildInfoRow(
-                          'Equipment',
-                          userModel.equipmentOwned!.join(', '),
-                        ),
                     ],
                   ),
                 ),

@@ -18,16 +18,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   String? _selectedGender;
   final _countryController = TextEditingController();
   final _regionController = TextEditingController();
-  final _districtController = TextEditingController();
-  final _villageController = TextEditingController();
-  final _farmSizeController = TextEditingController();
-  final _farmAddressController = TextEditingController();
-  String? _selectedSoilType;
-  String? _selectedClimateZone;
-  final _farmingExperienceController = TextEditingController();
-  final _primaryCropsController = TextEditingController();
-  String? _selectedFarmingMethods;
-  final _equipmentController = TextEditingController();
   bool _isLoading = false;
 
   final List<String> _genders = [
@@ -36,33 +26,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     'Other',
     'Prefer not to say',
   ];
-  final List<String> _soilTypes = [
-    'Clay',
-    'Sandy',
-    'Silt',
-    'Loam',
-    'Clay Loam',
-    'Sandy Loam',
-    'Silt Loam',
-    'Other',
-  ];
-  final List<String> _climateZones = [
-    'Tropical',
-    'Subtropical',
-    'Temperate',
-    'Arid',
-    'Semi-arid',
-    'Mediterranean',
-    'Continental',
-    'Polar',
-  ];
-  final List<String> _farmingMethodsList = [
-    'Traditional',
-    'Modern',
-    'Organic',
-    'Mixed (Traditional + Modern)',
-    'Sustainable',
-  ];
+
   @override
   void initState() {
     super.initState();
@@ -77,19 +41,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         _selectedGender = existingProfile.gender;
         _countryController.text = existingProfile.country ?? '';
         _regionController.text = existingProfile.region ?? '';
-        _districtController.text = existingProfile.district ?? '';
-        _villageController.text = existingProfile.village ?? '';
-        _farmSizeController.text = existingProfile.farmSize?.toString() ?? '';
-        _farmAddressController.text = existingProfile.farmAddress ?? '';
-        _selectedSoilType = existingProfile.soilType;
-        _selectedClimateZone = existingProfile.climateZone;
-        _farmingExperienceController.text =
-            existingProfile.farmingExperienceYears?.toString() ?? '';
-        _primaryCropsController.text =
-            existingProfile.primaryCrops?.join(', ') ?? '';
-        _selectedFarmingMethods = existingProfile.farmingMethods;
-        _equipmentController.text =
-            existingProfile.equipmentOwned?.join(', ') ?? '';
       }
     });
   }
@@ -100,13 +51,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
     _phoneController.dispose();
     _countryController.dispose();
     _regionController.dispose();
-    _districtController.dispose();
-    _villageController.dispose();
-    _farmSizeController.dispose();
-    _farmAddressController.dispose();
-    _farmingExperienceController.dispose();
-    _primaryCropsController.dispose();
-    _equipmentController.dispose();
     super.dispose();
   }
 
@@ -136,9 +80,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       final user = authProvider.user!;
 
       final userModel = UserModel(
-        uid: user.uid,
+        uid: user.id,
         fullName: _fullNameController.text.trim(),
-        email: user.email!,
+        email: user.email ?? '',
         phoneNumber: _phoneController.text.trim().isEmpty
             ? null
             : _phoneController.text.trim(),
@@ -150,38 +94,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         region: _regionController.text.trim().isEmpty
             ? null
             : _regionController.text.trim(),
-        district: _districtController.text.trim().isEmpty
-            ? null
-            : _districtController.text.trim(),
-        village: _villageController.text.trim().isEmpty
-            ? null
-            : _villageController.text.trim(),
-        farmSize: _farmSizeController.text.trim().isEmpty
-            ? null
-            : double.tryParse(_farmSizeController.text.trim()),
-        farmAddress: _farmAddressController.text.trim().isEmpty
-            ? null
-            : _farmAddressController.text.trim(),
-        soilType: _selectedSoilType,
-        climateZone: _selectedClimateZone,
-        farmingExperienceYears: _farmingExperienceController.text.trim().isEmpty
-            ? null
-            : int.tryParse(_farmingExperienceController.text.trim()),
-        primaryCrops: _primaryCropsController.text.trim().isEmpty
-            ? null
-            : _primaryCropsController.text
-                  .trim()
-                  .split(',')
-                  .map((e) => e.trim())
-                  .toList(),
-        farmingMethods: _selectedFarmingMethods,
-        equipmentOwned: _equipmentController.text.trim().isEmpty
-            ? null
-            : _equipmentController.text
-                  .trim()
-                  .split(',')
-                  .map((e) => e.trim())
-                  .toList(),
       );
 
       await authProvider.saveUserProfile(userModel);
@@ -233,70 +145,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               const SizedBox(height: 16),
 
               // Location Section
-              _buildSectionHeader('Location & Farm Details'),
+              _buildSectionHeader('Location Information'),
               _buildTextField(_countryController, 'Country', Icons.flag),
               _buildTextField(
                 _regionController,
                 'Region/State',
                 Icons.location_on,
-              ),
-              _buildTextField(
-                _districtController,
-                'District/County',
-                Icons.location_city,
-              ),
-              _buildTextField(_villageController, 'Village/Town', Icons.home),
-              _buildTextField(
-                _farmSizeController,
-                'Farm Size (acres/hectares)',
-                Icons.landscape,
-                keyboardType: TextInputType.number,
-              ),
-              _buildTextField(
-                _farmAddressController,
-                'Farm Address',
-                Icons.map,
-              ),
-              _buildDropdownField(
-                'Soil Type',
-                _selectedSoilType,
-                _soilTypes,
-                (value) => setState(() => _selectedSoilType = value),
-              ),
-              _buildDropdownField(
-                'Climate Zone',
-                _selectedClimateZone,
-                _climateZones,
-                (value) => setState(() => _selectedClimateZone = value),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Farming Experience Section
-              _buildSectionHeader('Farming Experience'),
-              _buildTextField(
-                _farmingExperienceController,
-                'Years of Farming Experience',
-                Icons.timeline,
-                keyboardType: TextInputType.number,
-              ),
-              _buildTextField(
-                _primaryCropsController,
-                'Primary Crops (comma separated)',
-                Icons.grass,
-                hint: 'e.g., Maize, Beans, Tomatoes',
-              ),
-              _buildDropdownField(
-                'Farming Methods',
-                _selectedFarmingMethods,
-                _farmingMethodsList,
-                (value) => setState(() => _selectedFarmingMethods = value),
-              ),
-              _buildTextField(
-                _equipmentController,
-                'Equipment Owned (comma separated)',
-                Icons.build,
-                hint: 'e.g., Tractor, Plow, Irrigation System',
               ),
 
               const SizedBox(height: 20),

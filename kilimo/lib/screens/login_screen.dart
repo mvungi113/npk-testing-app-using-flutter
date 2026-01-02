@@ -12,44 +12,42 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
-  String? _selectedGender;
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   bool _isSignUp = false;
   bool _isLoading = false;
   String? _errorMessage;
-
-  final List<String> _genders = ['Male', 'Female', 'Other', 'Prefer not to say'];
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _fullNameController.dispose();
-    _phoneController.dispose();
-    _countryController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> _authenticate() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final fullName = _fullNameController.text.trim();
-    final phone = _phoneController.text.trim();
-    final country = _countryController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please fill in email and password';
+      });
+      return;
+    }
 
     if (_isSignUp) {
-      if (email.isEmpty || password.isEmpty || fullName.isEmpty) {
+      final confirmPassword = _confirmPasswordController.text.trim();
+      if (password != confirmPassword) {
         setState(() {
-          _errorMessage = 'Please fill in email, password, and full name';
+          _errorMessage = 'Passwords do not match';
         });
         return;
       }
-    } else {
-      if (email.isEmpty || password.isEmpty) {
+      if (password.length < 6) {
         setState(() {
-          _errorMessage = 'Please fill in email and password';
+          _errorMessage = 'Password must be at least 6 characters';
         });
         return;
       }
@@ -62,14 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       if (_isSignUp) {
-        await context.read<AuthProvider>().signUpWithEmail(
-          email,
-          password,
-          fullName,
-          phone: phone.isNotEmpty ? phone : null,
-          gender: _selectedGender,
-          country: country.isNotEmpty ? country : null,
-        );
+        await context.read<AuthProvider>().signUpWithEmail(email, password);
       } else {
         await context.read<AuthProvider>().signInWithEmail(email, password);
       }
@@ -118,10 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 12),
                     Text(
                       'Kilimo',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium
+                          ?.copyWith(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 6),
                     Text(
@@ -129,69 +121,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
                     const SizedBox(height: 20),
-                    if (_isSignUp)
-                      TextField(
-                        controller: _fullNameController,
-                        decoration: InputDecoration(
-                          labelText: 'Full Name *',
-                          prefixIcon: const Icon(Icons.person),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onChanged: (_) => setState(() => _errorMessage = null),
-                      ),
-                    if (_isSignUp) const SizedBox(height: 16),
-                    if (_isSignUp)
-                      TextField(
-                        controller: _phoneController,
-                        decoration: InputDecoration(
-                          labelText: 'Phone Number',
-                          prefixIcon: const Icon(Icons.phone),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        keyboardType: TextInputType.phone,
-                        onChanged: (_) => setState(() => _errorMessage = null),
-                      ),
-                    if (_isSignUp) const SizedBox(height: 16),
-                    if (_isSignUp)
-                      DropdownButtonFormField<String>(
-                        value: _selectedGender,
-                        decoration: InputDecoration(
-                          labelText: 'Gender',
-                          prefixIcon: const Icon(Icons.people),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        items: _genders.map((String gender) {
-                          return DropdownMenuItem<String>(
-                            value: gender,
-                            child: Text(gender),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            _selectedGender = newValue;
-                          });
-                        },
-                      ),
-                    if (_isSignUp) const SizedBox(height: 16),
-                    if (_isSignUp)
-                      TextField(
-                        controller: _countryController,
-                        decoration: InputDecoration(
-                          labelText: 'Country',
-                          prefixIcon: const Icon(Icons.flag),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onChanged: (_) => setState(() => _errorMessage = null),
-                      ),
-                    if (_isSignUp) const SizedBox(height: 16),
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -208,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: 'Password *',
                         prefixIcon: const Icon(Icons.lock),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -217,6 +146,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: true,
                       onChanged: (_) => setState(() => _errorMessage = null),
                     ),
+                    if (_isSignUp) ...[
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: _confirmPasswordController,
+                        decoration: InputDecoration(
+                          labelText: 'Confirm Password *',
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        obscureText: true,
+                        onChanged: (_) => setState(() => _errorMessage = null),
+                      ),
+                    ],
                     if (_errorMessage != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 16),
@@ -240,7 +184,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white)
+                            ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
                             : Text(_isSignUp ? 'Sign Up' : 'Sign In'),
                       ),
                     ),
@@ -281,7 +227,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                       setState(() => _isLoading = false);
                                     }
                                   },
-                            icon: const Icon(Icons.g_mobiledata, color: Colors.red),
+                            icon: const Icon(
+                              Icons.g_mobiledata,
+                              color: Colors.red,
+                            ),
                             label: const Text('Google'),
                             style: OutlinedButton.styleFrom(
                               shape: RoundedRectangleBorder(

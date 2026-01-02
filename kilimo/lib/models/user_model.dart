@@ -2,6 +2,7 @@ class UserModel {
   final String uid;
   final String? fullName;
   final String email;
+  final String? profileImageUrl;
   final String? phoneNumber;
   final DateTime? dateOfBirth;
   final String? gender;
@@ -28,6 +29,7 @@ class UserModel {
     required this.uid,
     this.fullName,
     required this.email,
+    this.profileImageUrl,
     this.phoneNumber,
     this.dateOfBirth,
     this.gender,
@@ -61,12 +63,18 @@ class UserModel {
     return age;
   }
 
+  // Check if profile is complete (has basic required information)
+  bool get isProfileComplete {
+    return fullName != null && fullName!.isNotEmpty;
+  }
+
   // Create from Firestore document
   factory UserModel.fromMap(String uid, Map<String, dynamic> data) {
     return UserModel(
       uid: uid,
       fullName: data['fullName'],
       email: data['email'] ?? '',
+      profileImageUrl: data['profileImageUrl'],
       phoneNumber: data['phoneNumber'],
       dateOfBirth: data['dateOfBirth'] != null
           ? DateTime.fromMillisecondsSinceEpoch(data['dateOfBirth'])
@@ -104,6 +112,7 @@ class UserModel {
     return {
       'fullName': fullName,
       'email': email,
+      'profileImageUrl': profileImageUrl,
       'phoneNumber': phoneNumber,
       'dateOfBirth': dateOfBirth?.millisecondsSinceEpoch,
       'gender': gender,
@@ -121,7 +130,9 @@ class UserModel {
       'primaryCrops': primaryCrops,
       'farmingMethods': farmingMethods,
       'equipmentOwned': equipmentOwned,
-      'createdAt': createdAt?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch,
+      'createdAt':
+          createdAt?.millisecondsSinceEpoch ??
+          DateTime.now().millisecondsSinceEpoch,
       'updatedAt': DateTime.now().millisecondsSinceEpoch,
     };
   }
@@ -129,6 +140,7 @@ class UserModel {
   // Copy with method for updates
   UserModel copyWith({
     String? fullName,
+    String? profileImageUrl,
     String? phoneNumber,
     DateTime? dateOfBirth,
     String? gender,
@@ -151,6 +163,7 @@ class UserModel {
       uid: uid,
       fullName: fullName ?? this.fullName,
       email: email,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       dateOfBirth: dateOfBirth ?? this.dateOfBirth,
       gender: gender ?? this.gender,
@@ -164,7 +177,8 @@ class UserModel {
       farmAddress: farmAddress ?? this.farmAddress,
       soilType: soilType ?? this.soilType,
       climateZone: climateZone ?? this.climateZone,
-      farmingExperienceYears: farmingExperienceYears ?? this.farmingExperienceYears,
+      farmingExperienceYears:
+          farmingExperienceYears ?? this.farmingExperienceYears,
       primaryCrops: primaryCrops ?? this.primaryCrops,
       farmingMethods: farmingMethods ?? this.farmingMethods,
       equipmentOwned: equipmentOwned ?? this.equipmentOwned,

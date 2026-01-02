@@ -50,10 +50,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       'Ready to optimize your farming with NPK testing?',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
-                      ),
+                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                   ],
                 ),
@@ -65,10 +62,7 @@ class HomeScreen extends StatelessWidget {
             if (userModel != null) ...[
               const Text(
                 'Your Profile',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               Card(
@@ -92,19 +86,36 @@ class HomeScreen extends StatelessWidget {
                       if (userModel.village != null)
                         _buildInfoRow('Village', userModel.village!),
                       if (userModel.farmSize != null)
-                        _buildInfoRow('Farm Size', '${userModel.farmSize} acres'),
+                        _buildInfoRow(
+                          'Farm Size',
+                          '${userModel.farmSize} acres',
+                        ),
                       if (userModel.soilType != null)
                         _buildInfoRow('Soil Type', userModel.soilType!),
                       if (userModel.climateZone != null)
                         _buildInfoRow('Climate Zone', userModel.climateZone!),
                       if (userModel.farmingExperienceYears != null)
-                        _buildInfoRow('Farming Experience', '${userModel.farmingExperienceYears} years'),
-                      if (userModel.primaryCrops != null && userModel.primaryCrops!.isNotEmpty)
-                        _buildInfoRow('Primary Crops', userModel.primaryCrops!.join(', ')),
+                        _buildInfoRow(
+                          'Farming Experience',
+                          '${userModel.farmingExperienceYears} years',
+                        ),
+                      if (userModel.primaryCrops != null &&
+                          userModel.primaryCrops!.isNotEmpty)
+                        _buildInfoRow(
+                          'Primary Crops',
+                          userModel.primaryCrops!.join(', '),
+                        ),
                       if (userModel.farmingMethods != null)
-                        _buildInfoRow('Farming Methods', userModel.farmingMethods!),
-                      if (userModel.equipmentOwned != null && userModel.equipmentOwned!.isNotEmpty)
-                        _buildInfoRow('Equipment', userModel.equipmentOwned!.join(', ')),
+                        _buildInfoRow(
+                          'Farming Methods',
+                          userModel.farmingMethods!,
+                        ),
+                      if (userModel.equipmentOwned != null &&
+                          userModel.equipmentOwned!.isNotEmpty)
+                        _buildInfoRow(
+                          'Equipment',
+                          userModel.equipmentOwned!.join(', '),
+                        ),
                     ],
                   ),
                 ),
@@ -117,26 +128,17 @@ class HomeScreen extends StatelessWidget {
             Center(
               child: Column(
                 children: [
-                  const Icon(
-                    Icons.agriculture,
-                    size: 64,
-                    color: Colors.green,
-                  ),
+                  const Icon(Icons.agriculture, size: 64, color: Colors.green),
                   const SizedBox(height: 16),
                   const Text(
                     'NPK Testing Features Coming Soon!',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Soil analysis and farming recommendations will be available here.',
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -161,12 +163,7 @@ class HomeScreen extends StatelessWidget {
               color: Colors.grey,
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Text(value, style: const TextStyle(fontWeight: FontWeight.w500)),
         ],
       ),
     );

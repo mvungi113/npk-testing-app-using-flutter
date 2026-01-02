@@ -32,7 +32,23 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> signInWithGoogle() async {
-    await _authService.signInWithGoogle();
+    final userCredential = await _authService.signInWithGoogle();
+    if (userCredential != null && userCredential.user != null) {
+      final user = userCredential.user!;
+      // Check if user profile already exists
+      final existingProfile = await _authService.getUserProfile(user.uid);
+      if (existingProfile == null) {
+        // Create user profile with Google account information
+        final userModel = UserModel(
+          uid: user.uid,
+          email: user.email ?? '',
+          fullName: user.displayName ?? '',
+          phoneNumber: user.phoneNumber ?? '',
+          profileImageUrl: user.photoURL ?? '',
+        );
+        await _authService.saveUserProfile(userModel);
+      }
+    }
   }
 
   Future<void> signInAnonymously() async {
@@ -43,25 +59,14 @@ class AuthProvider with ChangeNotifier {
     await _authService.signInWithEmailAndPassword(email, password);
   }
 
-  Future<void> signUpWithEmail(
-    String email,
-    String password,
-    String fullName, {
-    String? phone,
-    String? gender,
-    String? country,
-  }) async {
-    final userCredential = await _authService.createUserWithEmailAndPassword(email, password);
+  Future<void> signUpWithEmail(String email, String password) async {
+    final userCredential = await _authService.createUserWithEmailAndPassword(
+      email,
+      password,
+    );
     if (userCredential != null && userCredential.user != null) {
       // Create basic user profile immediately after sign up
-      final userModel = UserModel(
-        uid: userCredential.user!.uid,
-        fullName: fullName,
-        email: email,
-        phoneNumber: phone,
-        gender: gender,
-        country: country,
-      );
+      final userModel = UserModel(uid: userCredential.user!.uid, email: email);
       await _authService.saveUserProfile(userModel);
     }
   }

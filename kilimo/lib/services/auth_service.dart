@@ -90,7 +90,10 @@ class AuthService {
   // Save user profile to Firestore
   Future<void> saveUserProfile(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.uid).set(user.toMap(), SetOptions(merge: true));
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .set(user.toMap(), SetOptions(merge: true));
     } catch (e) {
       debugPrint('Error saving user profile: $e');
       rethrow;
